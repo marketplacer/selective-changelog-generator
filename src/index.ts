@@ -1,3 +1,4 @@
+import * as path from 'path'
 import { Commit, Context, Options } from 'semantic-release'
 
 const typeTitles = {
@@ -51,20 +52,35 @@ interface ReleaseNotesOptionsGeneratorParams {
   ci?: boolean
   dryRun?: boolean
   plugins?: Plugin[]
+  changelogFile?: string
+  changelogRepo: string
 }
 
 interface ScopedReleaseNotesParams extends ReleaseNotesOptionsGeneratorParams {
-  changelogFile?: string
   changelogTitle?: string
   desiredScope: string
   /** Whether the release notes are publicly viewable. Redacts certain things (links, SHAs, etc.) if true. */
   isPublic?: boolean
 }
 
+const modulePath: string = path.resolve(__dirname, '..')
+
+const pushChangelogToRepoPlugin = (
+  remote: string,
+  file: string,
+  branch: string
+): Plugin => [
+  '@semantic-release/exec',
+  {
+    publishCmd: `${modulePath}/push-to-repo "${remote}" "${file}" ${branch}`
+  }
+]
+
 export function scopedReleaseNotes ({
   branch = 'main',
   changelogFile = 'CHANGELOG.md',
   changelogTitle = 'Changelog',
+  changelogRepo,
   ci = false,
   desiredScope,
   dryRun = false,
@@ -91,6 +107,7 @@ export function scopedReleaseNotes ({
           changelogTitle: `# ${changelogTitle}`
         }
       ],
+      pushChangelogToRepoPlugin(changelogRepo, changelogFile, branch),
       ...plugins
     ],
     ci,
@@ -102,6 +119,8 @@ export function scopedReleaseNotes ({
 
 export function fullReleaseNotes ({
   branch = 'main',
+  changelogFile = 'CHANGELOG.md',
+  changelogRepo,
   ci,
   dryRun,
   plugins = []
@@ -114,6 +133,7 @@ export function fullReleaseNotes ({
       '@semantic-release/commit-analyzer',
       '@semantic-release/release-notes-generator',
       '@semantic-release/changelog',
+      pushChangelogToRepoPlugin(changelogRepo, changelogFile, branch),
       ...plugins
     ],
     ci,
