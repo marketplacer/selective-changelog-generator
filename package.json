@@ -1,9 +1,10 @@
 {
-  "name": "selective-changelog-generator",
+  "name": "@marketplacer/selective-changelog-generator",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "prepublishOnly": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Marketplacer <it@marketplacer.com>",
@@ -26,5 +27,14 @@
     "@semantic-release/commit-analyzer": "^8.0.1",
     "@semantic-release/exec": "^5.0.0",
     "@semantic-release/release-notes-generator": "^9.0.1"
-  }
+  },
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marketplacer/selective-changelog-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/marketplacer/selective-changelog-generator/issues"
+  },
+  "homepage": "https://github.com/marketplacer/selective-changelog-generator#readme"
 }
