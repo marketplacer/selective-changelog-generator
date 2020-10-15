@@ -1,5 +1,5 @@
-import * as path from 'path'
 import { Commit, Context, Options } from 'semantic-release'
+import { DEFAULT_CHANGELOG_FILE } from './defaults'
 
 const typeTitles = {
   feat: 'Features',
@@ -50,10 +50,11 @@ type Plugin = string | [name: string, options: object]
 interface ReleaseNotesOptionsGeneratorParams {
   branch?: string
   ci?: boolean
+  org: string
+  repo: string
   dryRun?: boolean
   plugins?: Plugin[]
   changelogFile?: string
-  changelogRepo: string
 }
 
 interface ScopedReleaseNotesParams extends ReleaseNotesOptionsGeneratorParams {
@@ -63,29 +64,16 @@ interface ScopedReleaseNotesParams extends ReleaseNotesOptionsGeneratorParams {
   isPublic?: boolean
 }
 
-const modulePath: string = path.resolve(__dirname, '..')
-
-const pushChangelogToRepoPlugin = (
-  remote: string,
-  file: string,
-  branch: string
-): Plugin => [
-  '@semantic-release/exec',
-  {
-    publishCmd: `${modulePath}/push-to-repo "${remote}" "${file}" ${branch}`
-  }
-]
-
 export function scopedReleaseNotes ({
   branch = 'main',
-  changelogFile = 'CHANGELOG.md',
+  changelogFile = DEFAULT_CHANGELOG_FILE,
   changelogTitle = 'Changelog',
-  changelogRepo,
   ci = false,
   desiredScope,
   dryRun = false,
   isPublic = true,
-  plugins = []
+  plugins = [],
+  ...rest
 }: ScopedReleaseNotesParams): Options {
   const options: Options = {
     writerOpts: { transform: transformCommit(desiredScope) },
@@ -107,11 +95,14 @@ export function scopedReleaseNotes ({
           changelogTitle: `# ${changelogTitle}`
         }
       ],
-      pushChangelogToRepoPlugin(changelogRepo, changelogFile, branch),
+      '@marketplacer/selective-changelog-generator',
       ...plugins
     ],
     ci,
-    dryRun
+    dryRun,
+    changelogFile,
+    changelogTitle,
+    ...rest
   }
 
   return options
@@ -119,11 +110,10 @@ export function scopedReleaseNotes ({
 
 export function fullReleaseNotes ({
   branch = 'main',
-  changelogFile = 'CHANGELOG.md',
-  changelogRepo,
   ci,
   dryRun,
-  plugins = []
+  plugins = [],
+  ...rest
 }: ReleaseNotesOptionsGeneratorParams): Options {
   return {
     branches: [branch],
@@ -133,10 +123,13 @@ export function fullReleaseNotes ({
       '@semantic-release/commit-analyzer',
       '@semantic-release/release-notes-generator',
       '@semantic-release/changelog',
-      pushChangelogToRepoPlugin(changelogRepo, changelogFile, branch),
+      '@marketplacer/selective-changelog-generator',
       ...plugins
     ],
     ci,
-    dryRun
+    dryRun,
+    ...rest
   }
 }
+
+export { publish } from './update-github-file'
