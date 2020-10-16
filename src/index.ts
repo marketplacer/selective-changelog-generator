@@ -28,15 +28,23 @@ const transformCommit = (desiredScope: string) => (
   commit: ParsedCommit,
   _context: Context
 ): FormattedCommit | undefined => {
-  if (typeof commit.type === 'undefined' || commit.scope !== desiredScope) {
+  if (
+    typeof commit.type === 'undefined' ||
+    commit.scope?.toLowerCase() !== desiredScope.toLowerCase()
+  ) {
     return
   }
 
   const privateTypes: CommitType[] = ['style', 'refactor', 'build', 'ci']
 
   if (privateTypes.includes(commit.type)) return
+  const normalizedType = commit.type.toLowerCase()
 
-  const formattedType = typeTitles[commit.type]
+  if (!Object.keys(typeTitles).includes(normalizedType)) {
+    return
+  }
+
+  const formattedType = typeTitles[normalizedType as CommitType]
 
   return {
     ...commit,
