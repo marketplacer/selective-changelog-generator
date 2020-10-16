@@ -7,11 +7,14 @@
     "prepublishOnly": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint:code": "eslint --ignore-path .gitignore .",
-    "compile": "tsc"
+    "compile": "tsc",
+    "lint:commits:branch": "commitlint --from origin/HEAD --to HEAD --verbose"
   },
   "author": "Marketplacer <it@marketplacer.com>",
   "license": "MIT",
   "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
     "@types/node": "^14.11.8",
     "@types/semantic-release": "^17.1.0",
     "@typescript-eslint/eslint-plugin": "^4.4.1",
@@ -22,6 +25,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
+    "husky": "^4.3.0",
     "typescript": "^4.0.3"
   },
   "dependencies": {
@@ -38,5 +42,13 @@
   "bugs": {
     "url": "https://github.com/marketplacer/selective-changelog-generator/issues"
   },
-  "homepage": "https://github.com/marketplacer/selective-changelog-generator#readme"
+  "homepage": "https://github.com/marketplacer/selective-changelog-generator#readme",
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "commitlint": {
+    "extends": ["@commitlint/config-conventional"]
+  }
 }

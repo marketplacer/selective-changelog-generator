@@ -1,5 +1,13 @@
 ---
 steps:
+  - name: ':git: Lint commits'
+    command: 'npm run lint:commits:branch'
+    # we don't modify main commits, so it's too late to lint here
+    branches: '!main'
+    plugins:
+      - docker-compose#v3.7.0:
+          config: .buildkite/docker/docker-compose.yml
+          run: tests
   - name: ':eslint: Code linting'
     command: 'npm run lint:code'
     plugins:
