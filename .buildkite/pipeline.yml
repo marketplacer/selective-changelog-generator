@@ -20,3 +20,22 @@ steps:
       - docker-compose#v3.7.0:
           config: .buildkite/docker/docker-compose.yml
           run: tests
+
+  - wait
+
+  - name: ':shipit: Publish release'
+    command: 'npx semantic-release'
+    branches: 'main'
+    plugins:
+      - seek-oss/aws-sm#v2.1.0:
+          env:
+            NPM_TOKEN: "buildkite-selective-changelog-generator-npm-token"
+            GITHUB_TOKEN: "buildkite-marketplacer-github-token"
+      - docker-compose#v3.7.0:
+          config: .buildkite/docker/docker-compose.yml
+          run: tests
+          env:
+            - CI
+            - GITHUB_TOKEN
+            - NPM_TOKEN
+            - GIT_BRANCH: "$BUILDKITE_BRANCH"
