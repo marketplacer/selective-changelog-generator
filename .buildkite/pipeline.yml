@@ -1,0 +1,14 @@
+---
+steps:
+  - name: ':eslint: Code linting'
+    command: 'npm run lint:code'
+    plugins:
+      - docker-compose#v3.7.0:
+          config: .buildkite/docker/docker-compose.yml
+          run: tests
+  - name: ':typescript: Compile'
+    command: 'npm run compile'
+    plugins:
+      - docker-compose#v3.7.0:
+          config: .buildkite/docker/docker-compose.yml
+          run: tests
