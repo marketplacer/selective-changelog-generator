@@ -1,1 +1,0 @@
-export const DEFAULT_CHANGELOG_FILE = 'CHANGELOG.md'

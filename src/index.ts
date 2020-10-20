@@ -1,5 +1,4 @@
 import { Commit, Context, Options } from 'semantic-release'
-import { DEFAULT_CHANGELOG_FILE } from './defaults'
 
 const typeTitles = {
   feat: 'Features',
@@ -58,15 +57,11 @@ type Plugin = string | [name: string, options: object]
 interface ReleaseNotesOptionsGeneratorParams {
   branch?: string
   ci?: boolean
-  org: string
-  repo: string
   dryRun?: boolean
   plugins?: Plugin[]
-  changelogFile?: string
 }
 
 interface ScopedReleaseNotesParams extends ReleaseNotesOptionsGeneratorParams {
-  changelogTitle?: string
   desiredScope: string
   /** Whether the release notes are publicly viewable. Redacts certain things (links, SHAs, etc.) if true. */
   isPublic?: boolean
@@ -74,8 +69,6 @@ interface ScopedReleaseNotesParams extends ReleaseNotesOptionsGeneratorParams {
 
 export function scopedReleaseNotes ({
   branch = 'main',
-  changelogFile = DEFAULT_CHANGELOG_FILE,
-  changelogTitle = 'Changelog',
   ci = false,
   desiredScope,
   dryRun = false,
@@ -96,20 +89,11 @@ export function scopedReleaseNotes ({
           linkReferences: !isPublic
         }
       ],
-      [
-        '@semantic-release/changelog',
-        {
-          changelogFile,
-          changelogTitle: `# ${changelogTitle}`
-        }
-      ],
       '@marketplacer/selective-changelog-generator',
       ...plugins
     ],
     ci,
     dryRun,
-    changelogFile,
-    changelogTitle,
     ...rest
   }
 
@@ -130,7 +114,6 @@ export function fullReleaseNotes ({
     plugins: [
       '@semantic-release/commit-analyzer',
       '@semantic-release/release-notes-generator',
-      '@semantic-release/changelog',
       '@marketplacer/selective-changelog-generator',
       ...plugins
     ],
@@ -140,4 +123,4 @@ export function fullReleaseNotes ({
   }
 }
 
-export { publish } from './update-github-file'
+export { publish } from './push-to-slack'
