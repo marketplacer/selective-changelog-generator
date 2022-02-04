@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint:code": "eslint --ignore-path .gitignore .",
     "compile": "tsc",
-    "lint:commits:branch": "commitlint --from origin/HEAD --to HEAD --verbose"
+    "lint:commits:branch": "commitlint --from origin/HEAD --to HEAD --verbose",
+    "prepare": "husky install"
   },
   "author": "Marketplacer <it@marketplacer.com>",
   "license": "MIT",
@@ -25,7 +26,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-standard": "^5.0.0",
-    "husky": "^4.3.8",
+    "husky": "^7.0.4",
     "typescript": "^4.5.5"
   },
   "dependencies": {
