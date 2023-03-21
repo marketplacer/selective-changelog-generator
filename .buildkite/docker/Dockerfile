@@ -5,5 +5,5 @@ RUN apk update && apk add --no-cache git
 
 COPY package.json package-lock.json ./
 
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 RUN npm set unsafe-perm true
