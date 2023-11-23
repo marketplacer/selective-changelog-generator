@@ -1,4 +1,4 @@
-import { Commit, Context, Options } from 'semantic-release'
+import { Commit, Options } from 'semantic-release'
 
 const typeTitles = {
   feat: 'Features',
@@ -24,8 +24,7 @@ interface FormattedCommit extends Commit {
 }
 
 const transformCommit = (desiredScope: string) => (
-  commit: ParsedCommit,
-  _context: Context
+  commit: ParsedCommit
 ): FormattedCommit | undefined => {
   if (
     typeof commit.type === 'undefined' ||

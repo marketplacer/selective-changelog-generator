@@ -6,6 +6,6 @@ module.exports = {
     '@semantic-release/github',
     '@semantic-release/npm'
   ],
-  ci: process.env.CI || false,
-  dryRun: process.env.DRY_RUN || false
+  ci: process.env.CI ?? false,
+  dryRun: process.env.DRY_RUN ?? false
 }
